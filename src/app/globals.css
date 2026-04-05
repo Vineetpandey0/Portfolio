@@ -78,6 +78,8 @@
     max-width: 100vw;
     overflow-x: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
+    /* Zoom out the website slightly as requested */
+    zoom: 0.95;
   }
 }
 

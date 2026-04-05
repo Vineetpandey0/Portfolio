@@ -1,65 +1,122 @@
+import styles from "./portfolio.module.css";
 import Image from "next/image";
+import Link from "next/link";
 
-export default function Home() {
+interface Repo {
+  id: number;
+  name: string;
+  description: string;
+  html_url: string;
+  language: string;
+  fork: boolean;
+  topics: string[];
+}
+
+async function getRepos(): Promise<Repo[]> {
+  try {
+    const res = await fetch("https://api.github.com/users/vineetpandey0/repos?sort=updated", {
+      next: { revalidate: 3600 } // Cache for 1 hour
+    });
+    
+    if (!res.ok) throw new Error("Failed to fetch repos");
+    const repos: Repo[] = await res.json();
+    
+    // Filter out forks and repos without descriptions or specific ones
+    return repos.filter(
+      (repo) => !repo.fork && repo.description && repo.name !== "Vineetpandey0"
+    );
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const repos = await getRepos();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className={styles.container}>
+      <header className={`${styles.header} animate-fade-in`}>
+        <div className={styles.logo} style={{ fontFamily: "var(--font-outfit)" }}>
+          VP.
+        </div>
+        <nav className={styles.nav}>
+          <a href="#about" className={styles.navLink}>About</a>
+          <a href="#projects" className={styles.navLink}>Projects</a>
+          <a href="https://github.com/vineetpandey0" target="_blank" rel="noopener noreferrer" className={styles.navLink}>GitHub</a>
+        </nav>
+      </header>
+
+      <main>
+        <section id="about" className={styles.hero}>
+          <div className={`${styles.profileImageContainer} animate-fade-in delay-100`}>
+             <div className={styles.profileImagePlaceholder}>
+               Image Upload Later
+             </div>
+          </div>
+          <h1 className={`${styles.heroTitle} animate-fade-in delay-200`} style={{ fontFamily: "var(--font-outfit)" }}>
+            Hi, I'm Vineet Pandey
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className={`${styles.heroSubtitle} animate-fade-in delay-300`}>
+            I am a developer who loves building unique, responsive, and beautiful web applications. 
+            Currently showcasing my open-source projects.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+          <a href="#projects" className={`${styles.ctaButton} animate-fade-in delay-300`}>
+            View My Work
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        </section>
+
+        <section id="projects" className={styles.section}>
+          <h2 className={styles.sectionTitle} style={{ fontFamily: "var(--font-outfit)" }}>
+            Selected Projects
+          </h2>
+          
+          <div className={styles.grid}>
+            {repos.map((repo, index) => (
+              <a 
+                href={repo.html_url} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                key={repo.id} 
+                className={`${styles.card} animate-fade-in`}
+                style={{ animationDelay: `${200 + index * 100}ms`, animationFillMode: 'forwards' }}
+              >
+                <div className={styles.cardHeader}>
+                  <h3 className={styles.cardTitle} style={{ fontFamily: "var(--font-outfit)" }}>{repo.name}</h3>
+                  <svg 
+                    className={styles.githubIcon}
+                    xmlns="http://www.w3.org/2000/svg" 
+                    width="24" 
+                    height="24" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.02c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
+                </div>
+                <p className={styles.cardDescription}>{repo.description}</p>
+                <div className={styles.cardFooter}>
+                  {repo.language && (
+                    <span className={styles.languageBadge}>
+                      <span className={styles.languageDot}></span>
+                      {repo.language}
+                    </span>
+                  )}
+                  <span>View Project ↗</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
       </main>
+
+      <footer className={styles.footer}>
+        <p>© {new Date().getFullYear()} Vineet Pandey. All rights reserved.</p>
+      </footer>
     </div>
   );
 }

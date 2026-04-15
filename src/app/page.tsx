@@ -38,7 +38,7 @@ export default async function Home() {
   // Array of technology slugs for individual icons
   const techStack = [
     "tailwind", "html", "css", "react", "nextjs", "typescript", "javascript",
-    "nodejs", "python", "mongodb", "supabase", "git", "github", "zustand", "express", "c", "cpp"
+    "nodejs", "python", "mongodb", "git", "github", "zustand", "express", "c", "cpp"
   ];
 
   const expoIcon = "https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/expo.png";
@@ -54,10 +54,23 @@ export default async function Home() {
         >
           VP.
         </div>
-        <nav className="flex gap-8">
+        <nav className="flex items-center gap-8">
           <a href="#about" className="font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">About</a>
           <a href="#projects" className="font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">Projects</a>
           <a href={`mailto:${email}`} className="font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">Contact</a>
+          <a
+            id="download-resume-btn"
+            href="/Resume.pdf"
+            download="Vineet_Pandey_Resume.pdf"
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-full font-semibold text-sm border border-accent text-accent hover:bg-accent hover:text-white transition-all duration-200 hover:-translate-y-0.5"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Download Resume
+          </a>
         </nav>
       </header>
 

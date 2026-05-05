@@ -43,7 +43,8 @@ export default async function Home() {
 
   const expoIcon = "https://raw.githubusercontent.com/marwin1991/profile-technology-icons/refs/heads/main/icons/expo.png";
 
-  const activeProjects = ["adstudio", "readyui", "context-sync"];
+  const activeProjects = ["spawnapps", "adstudio", "readyui", "context-sync"];
+  const projectsToDisplay = ["spawnapps", "adstudio", "readyui", "context-sync"]; // Only these projects will be shown
 
   return (
     <div className="max-w-[1200px] mx-auto px-8">
@@ -55,9 +56,9 @@ export default async function Home() {
           VP.
         </div>
         <nav className="flex items-center gap-8">
-          <a href="#about" className="font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">About</a>
-          <a href="#projects" className="font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">Projects</a>
-          <a href={`mailto:${email}`} className="font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">Contact</a>
+          <a href="#about" className="hidden md:block font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">About</a>
+          <a href="#projects" className="hidden md:block font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">Projects</a>
+          <a href={`mailto:${email}`} className="hidden md:block font-medium text-text-secondary hover:text-text-primary relative group nav-underline transition-colors">Contact</a>
           <a
             id="download-resume-btn"
             href="/Resume.pdf"
@@ -69,7 +70,7 @@ export default async function Home() {
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Download Resume
+            <span className="hidden md:inline">Download </span>Resume
           </a>
         </nav>
       </header>
@@ -131,7 +132,9 @@ export default async function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {repos.map((repo, index) => {
+            {repos
+              .filter(repo => projectsToDisplay.some(p => repo.name.toLowerCase().includes(p.toLowerCase())))
+              .map((repo, index) => {
               // Exact name match or contains logic
               const isActive = activeProjects.some(p => repo.name.toLowerCase().includes(p.toLowerCase()));
               
@@ -201,7 +204,7 @@ export default async function Home() {
               I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
             </p>
             <div className="flex flex-col items-center gap-4">
-              <a href={`mailto:${email}`} className="text-2xl font-bold text-accent hover:underline decoration-wavy underline-offset-8 transition-all">
+              <a href={`mailto:${email}`} className="text-xl sm:text-2xl font-bold text-accent hover:underline decoration-wavy underline-offset-8 transition-all break-all px-4">
                 {email}
               </a>
               <div className="flex gap-6 mt-4">
